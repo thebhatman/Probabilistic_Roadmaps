@@ -136,7 +136,13 @@ void dijkstra(int source_id, int dest_id, vector<node> &graph, Mat a)
 		prev_node_id = curr_node_id;
 		curr_node_id = index_of_best_node(source_id, dist, visited, graph);
 		cout<<"curr_node_id = "<<curr_node_id<<endl;
+		if(curr_node_id != -1)
+			a.at<uchar>(graph[curr_node_id].x, graph[curr_node_id].y) =127;
 		//cout<<graph[curr_node_id].x<<" "<<graph[curr_node_id].y<<endl;
+		namedWindow("Process", WINDOW_NORMAL);
+		imshow("Process", a);
+		waitKey(5);
+		if(curr_node_id == dest_id) break;
 		if(curr_node_id == -1)
 		{
 			int m = 0;
@@ -284,7 +290,14 @@ int main()
 	for(j = 0; j < N-1; j++)
 	{
 		if(!is_obs_present(graph[i].x, graph[i].y, src_distances[j].curr.x, src_distances[j].curr.y, img))
+		{
 			graph[i].neighbors.push_back(src_distances[j]);
+			neighbor_node temp;
+			temp.curr.x = graph[i].x;
+			temp.curr.y = graph[i].y;
+			temp.index = i;
+			graph[src_distances[j].index].neighbors.push_back(temp);
+		}
 		if(graph[i].neighbors.size() >= K)
 			break;
 	}
@@ -306,7 +319,14 @@ int main()
 	for(j = 0; j < N-1; j++)
 	{
 		if(!is_obs_present(graph[i].x, graph[i].y, dest_distances[j].curr.x, dest_distances[j].curr.y, img))
+		{	
 			graph[i].neighbors.push_back(dest_distances[j]);
+			neighbor_node temp;
+			temp.curr.x = graph[i].x;
+			temp.curr.y = graph[i].y;
+			temp.index = i;
+			graph[dest_distances[j].index].neighbors.push_back(temp);
+		}
 		if(graph[i].neighbors.size() >= K)
 			break;
 	}
